@@ -1,6 +1,6 @@
 
 let ds = makeMoons()
-let dl = DataLoader(basedOn: ds, withBatchSize: 8)
+let dl = DataLoader(basedOn: ds, withBatchSize: 4)
 let dc = DataCollection(trainLoader: dl)
 
 let model = Model(withLayers: [
@@ -13,4 +13,4 @@ let model = Model(withLayers: [
 ])
 
 let learner = Learner(onData: dc, withModel: model, withLoss: MSELoss())
-learner.fit(epochs: 1000, lr: 1e-8)
+learner.fit(epochs: 1000, lr: 1e-6)

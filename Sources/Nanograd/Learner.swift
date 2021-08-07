@@ -18,13 +18,9 @@ class Learner {
                 var totalLoss: Float = 0.0
                 for (X,y) in batch {
                     let yHat = model.forward(withInput: X)
-                    //print("yhat: \(yHat), \(y)")
                     totalLoss += loss.forward(withPrediction: yHat, withTarget: y) * batchScale
-                    //print(totalLoss)
                     let error = loss.backward(withPrediction: yHat, withTarget: y)
-                    //print(error)
                     model.backward(withError: error)
-                    //print("backward")
                 }
                 model.update(withLR: lr)
                 print("\repoch: \(epoch) loss: \(totalLoss)", terminator:"")

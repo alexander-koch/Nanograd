@@ -1,6 +1,7 @@
 
 class Model {
-    var layers: Array<Layer>
+    let layers: Array<Layer>
+
     init(withLayers l: Array<Layer>) {
         layers = l
     }
@@ -16,7 +17,6 @@ class Model {
     func backward(withError error: Matrix) -> Matrix {
         var currentError = error
         for i in stride(from: layers.count - 1, through: 0, by: -1) {
-            let last = currentError.shape()
             currentError = layers[i].backward(withError: currentError)
         }
         return currentError

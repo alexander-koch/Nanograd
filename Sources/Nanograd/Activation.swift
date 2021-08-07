@@ -10,33 +10,30 @@ func sigmoidDeriv(_ x: Float) -> Float {
 }
 
 class Activation: Layer {
+    let inputSize: Int
+    let outputSize: Int
     var inputCache: Matrix
-    var inputSize: Int
-    var outputSize: Int
-    var dx: Matrix
 
     init(rows inDim: Int, cols outDim: Int) {
         inputSize = inDim
         outputSize = outDim
         inputCache = Matrix(rows: 1, cols: inputSize)
-        dx = Matrix(rows: 1, cols: inputSize)
     }
 
-    override func forward(withInput input: Matrix) -> Matrix {
-        withUnsafeMutablePointer(to: &inputCache.data[0]) { incachepointer in
+    func forward(withInput input: Matrix) -> Matrix {
+        /*withUnsafeMutablePointer(to: &inputCache.data[0]) { incachepointer in
             withUnsafePointer(to: input.data[0]) { inpointer in
                 // inputCache := input
                 cblas_scopy(Int32(input.cols), inpointer, 1, incachepointer, 1)
             }
-        }
-
+        }*/
+        inputCache = input
         return input.map(withFunction: sigmoid)
     }
 
-    override func backward(withError error: Matrix) -> Matrix {
-        //dx = inputCache//.map(withFunction: sigmoidDeriv)//.hadamard(other: error)
-        return dx
+    func backward(withError error: Matrix) -> Matrix {
+        return inputCache.map(withFunction: sigmoidDeriv).hadamard(other: error)
     }
 
-    override func update(withLR lr: Float) {}
+    func update(withLR lr: Float) {}
 }

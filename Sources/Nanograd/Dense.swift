@@ -1,8 +1,8 @@
 import Accelerate
 
 class Dense: Layer {
-    var inputSize: Int
-    var outputSize: Int
+    let inputSize: Int
+    let outputSize: Int
     var weights: Matrix
     var bias: Matrix
 
@@ -30,13 +30,14 @@ class Dense: Layer {
         outputCache = Matrix(rows: 1, cols: outputSize)
     }
 
-    override func forward(withInput input: Matrix) -> Matrix {
-        withUnsafeMutablePointer(to: &inputCache.data[0]) { incachepointer in
+    func forward(withInput input: Matrix) -> Matrix {
+        /*withUnsafeMutablePointer(to: &inputCache.data[0]) { incachepointer in
             withUnsafePointer(to: input.data[0]) { inpointer in
                 // inputCache := input
                 cblas_scopy(Int32(input.cols), inpointer, 1, incachepointer, 1)
             }
-        }
+        }*/
+        inputCache = input
         
         withUnsafeMutablePointer(to: &outputCache.data[0]) { outpointer in
             // outputCache := bias
@@ -62,7 +63,7 @@ class Dense: Layer {
         return outputCache
     }
 
-    override func backward(withError error: Matrix) -> Matrix {
+    func backward(withError error: Matrix) -> Matrix {
         withUnsafePointer(to: error.data[0]) { errpointer in
             // db := db + error
             withUnsafeMutablePointer(to: &db.data[0]) { dbpointer in
@@ -108,7 +109,7 @@ class Dense: Layer {
         return dx
     }
 
-    override func update(withLR lr: Float) {
+    func update(withLR lr: Float) {
         let scale: Float = 1.0 / Float(batchSize)
 
         // dw := dw * scale
