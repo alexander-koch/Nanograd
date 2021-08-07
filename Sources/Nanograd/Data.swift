@@ -22,6 +22,39 @@ class Dataset {
     }
 }
 
+func linspace(start: Float, stop: Float, num: Int) -> Array<Float> {
+    if num == 1 {
+        return [stop]
+    } else {
+        let step = (stop - start) / Float(num - 1)
+        var out: Array<Float> = []
+        out.reserveCapacity(num)
+        for i in 0..<num {
+            out.append(start + step * Float(i))
+        }
+        return out
+    }
+}
+
+func makeMoons(numberOfSamples nSamples: Int = 100) -> Dataset {
+    let nSamplesOut = nSamples / 2
+    let nSamplesIn = nSamples - nSamplesOut
+
+    let outerCircX = linspace(start: 0, stop: Float.pi, num: nSamplesOut).map { cos($0) }
+    let outerCircY = linspace(start: 0, stop: Float.pi, num: nSamplesOut).map { sin($0) }
+
+    let innerCircX = linspace(start: 0, stop: Float.pi, num: nSamplesIn).map { 1 - cos($0) }
+    let innerCircY = linspace(start: 0, stop: Float.pi, num: nSamplesIn).map { 1 - sin($0) - 0.5 }
+
+    let xData = outerCircX + innerCircX + outerCircY + innerCircY
+    let X = Matrix(rows: 2, cols: nSamples, data: xData).transpose().getRows()
+   
+    let yData = [Float](repeating: 0, count: nSamplesOut) + [Float](repeating: 1, count: nSamplesIn)
+    let y = yData.map({ Matrix(rows: 1, cols: 1, data: [$0 * 2 - 1])})
+
+    return Dataset(data: X, labels: y)
+}
+
 class DataLoader {
     var dataset: Dataset
     var batchSize: Int
@@ -37,8 +70,7 @@ class DataLoader {
         if end < dataset.length() {
             return dataset[start..<end]
         } else {
-            let leftover = dataset.length() - start
-            return dataset[start..<leftover]
+            return dataset[start..<dataset.length()]
         }
     }
 
@@ -55,4 +87,10 @@ struct DataCollection {
     var trainLoader: DataLoader
     var valLoader: DataLoader?
     var testLoader: DataLoader?
+
+    init(trainLoader traindl: DataLoader, valLoader valdl: DataLoader? = nil, testLoader testdl: DataLoader? = nil) {
+        trainLoader = traindl
+        valLoader = valdl
+        testLoader = testdl
+    }
 }

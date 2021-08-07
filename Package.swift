@@ -7,7 +7,10 @@ let package = Package(
     name: "Nanograd",
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
+        /*.library(
+            name: "Nanograd",
+            targets: ["Nanograd"]),*/
+        .executable(
             name: "Nanograd",
             targets: ["Nanograd"]),
     ],

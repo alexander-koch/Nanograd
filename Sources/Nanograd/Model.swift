@@ -8,7 +8,7 @@ class Model {
     func forward(withInput data: Matrix) -> Matrix {
         var currentData = data
         for layer in layers {
-            currentData = layer.forward(withInput: data)
+            currentData = layer.forward(withInput: currentData)
         }
         return currentData
     }
@@ -16,6 +16,7 @@ class Model {
     func backward(withError error: Matrix) -> Matrix {
         var currentError = error
         for i in stride(from: layers.count - 1, through: 0, by: -1) {
+            let last = currentError.shape()
             currentError = layers[i].backward(withError: currentError)
         }
         return currentError
