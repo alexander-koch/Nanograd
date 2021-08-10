@@ -1,3 +1,3 @@
 # Nanograd
 
-A description of this package.
+Learning Swift by implementing a tiny deep learning framework
